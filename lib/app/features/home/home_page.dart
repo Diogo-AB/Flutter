@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:puc_minas/app/core/components/product_card.dart';
 import 'package:puc_minas/app/core/constants/app_routes.dart';
 import 'package:puc_minas/app/core/models/product_model.dart';
 import 'package:puc_minas/app/features/home/home_controler.dart';
@@ -35,6 +37,7 @@ class _HomePageState extends State<HomePage> {
 
           if (product != null) {
             products.add(product as ProductModel);
+            setState(() {});
           }
         },
         backgroundColor: Colors.green,
@@ -43,7 +46,25 @@ class _HomePageState extends State<HomePage> {
           color: Colors.white,
         ),
       ),
-      body: Container(),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            products.isEmpty
+                ? const Center(child: Text('Nenhum produto'))
+                : ListView.builder(
+                    itemBuilder: (context, index) => Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ProductCard(
+                        product: products[index],
+                      ),
+                    ),
+                    shrinkWrap: true,
+                    itemCount: products.length,
+                  )
+          ],
+        ),
+      ),
     );
   }
 }
