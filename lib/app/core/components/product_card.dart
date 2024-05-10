@@ -9,17 +9,17 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        border: Border.all(color: product.color),
-        borderRadius: BorderRadius.circular(10),
-      ),
+      decoration: BoxDecoration(border: Border.all(color: product.color), borderRadius: BorderRadius.circular(10), color: product.color.withOpacity(0.3)),
       child: Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [Text(product.price), Text(product.size)],
           ),
-          const Divider(),
+          Divider(
+            color: product.color,
+            thickness: 1.5,
+          ),
           Text(product.descriptions)
         ],
       ),

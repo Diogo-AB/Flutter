@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:puc_minas/app/core/components/product_card.dart';
 import 'package:puc_minas/app/core/constants/app_routes.dart';
+import 'package:puc_minas/app/core/modals/delete_alert_dialog.dart';
 import 'package:puc_minas/app/core/models/product_model.dart';
 import 'package:puc_minas/app/features/home/home_controler.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -55,13 +59,38 @@ class _HomePageState extends State<HomePage> {
                 : ListView.builder(
                     itemBuilder: (context, index) => Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: ProductCard(
-                        product: products[index],
+                      child: Dismissible(
+                        key: UniqueKey(),
+                        direction: DismissDirection.horizontal,
+                        confirmDismiss: (direction) async {
+                          if (direction == DismissDirection.endToStart || direction == DismissDirection.startToEnd) {
+                            bool? deleted = await showDialog<bool>(
+                                context: context,
+                                builder: (context) {
+                                  return const DeleteAlertDialog();
+                                });
+
+                            if (deleted == true) {
+                              try {
+                                products.removeAt(index);
+                                showTopSnackBar(Overlay.of(context), const CustomSnackBar.success(message: 'O produto foi excluído'));
+                                setState(() {});
+                              } catch (e) {
+                                showTopSnackBar(Overlay.of(context), const CustomSnackBar.error(message: 'Falha ao excluir o produto'));
+                              }
+                            }
+                            return deleted;
+                          }
+                          return false;
+                        },
+                        child: ProductCard(
+                          product: products[index],
+                        ),
                       ),
                     ),
                     shrinkWrap: true,
                     itemCount: products.length,
-                  )
+                  ).animate().slideX(begin: 1, end: 0, duration: 300.ms),
           ],
         ),
       ),
